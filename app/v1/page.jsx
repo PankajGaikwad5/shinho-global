@@ -1,6 +1,6 @@
 import ConceptShell from "@/components/concepts/shared/ConceptShell";
-import Nav from "@/components/Nav";
-import Hero from "@/components/Hero";
+import Nav from "@/components/concepts/v1/Nav";
+import Hero from "@/components/concepts/v1/Hero";
 import Lab from "@/components/Lab";
 import About from "@/components/concepts/v1/About";
 import Materials from "@/components/concepts/v1/Materials";
@@ -24,7 +24,7 @@ export default function V1() {
       <Lab />
       <Manufacturing />
       <Oem />
-      <EnquirySection />
+      <EnquirySection logo="light" />
     </ConceptShell>
   );
 }

@@ -14,7 +14,7 @@ const SHOTS = [
 ];
 
 const FACTS = [
-  ["20+ years", "Manufacturing experience held by our Korean partner.", true],
+  ["30+ years", "Manufacturing expertise behind every surface, through our Korean partner.", true],
   ["Partner-operated facilities", "SHINHO GLOBAL manages development, quality and international supply."],
   ["Made to specification", "From sampling to volume runs, produced against your requirements."],
 ];
@@ -44,9 +44,9 @@ export default function Manufacturing() {
       <div className="mx-auto mb-12 flex max-w-[1360px] flex-wrap items-end justify-between gap-x-12 gap-y-6 px-[clamp(20px,4vw,56px)]">
         <div className="flex max-w-[820px] flex-col gap-5">
           <span className="font-mono text-[11px] uppercase tracking-[.14em] text-stone">Manufacturing</span>
-          <Lines lines={["Two decades of making,", "in partnership."]} className="text-[clamp(44px,6vw,96px)] leading-[.92] font-medium [font-stretch:120%] tracking-[-.035em]" />
+          <Lines lines={["Three decades of making,", "in partnership."]} className="text-[clamp(44px,6vw,96px)] leading-[.92] font-medium [font-stretch:120%] tracking-[-.035em]" />
         </div>
-        <Reveal as="p" className="max-w-[400px] text-[15px] leading-[1.6] text-ash [text-wrap:pretty]">Production is delivered through our long-standing Korean manufacturing partner, with more than 20 years of experience — established processes, at scale and to specification.</Reveal>
+        <Reveal as="p" className="max-w-[400px] text-[15px] leading-[1.6] text-ash [text-wrap:pretty]">Production is delivered through our long-standing Korean manufacturing partner, with over 30 years of manufacturing expertise — established processes, at scale and to specification.</Reveal>
       </div>
 
       <div className="relative aspect-[2.2/1] min-h-[420px] w-full overflow-hidden bg-black">
