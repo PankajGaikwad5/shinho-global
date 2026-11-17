@@ -5,7 +5,9 @@ import SmoothScroll from "./SmoothScroll";
 import VersionSwitcher from "./VersionSwitcher";
 
 // Wrapper for every concept page: smooth scroll, film grain, opening letterbox and a version switcher.
-export default function ConceptShell({ children, smooth = true, letterbox = true, theme }) {
+// `switcher`: the V1–V13 concept selector. Real pages (e.g. /cast-films) pass false — the client's
+// pre-launch list says the concept selector must not appear on the public site.
+export default function ConceptShell({ children, smooth = true, letterbox = true, theme, switcher = true }) {
   return (
     <div className="concept font-display text-bone bg-ink" style={theme}>
       {smooth && <SmoothScroll />}
@@ -21,7 +23,7 @@ export default function ConceptShell({ children, smooth = true, letterbox = true
             transition={{ duration: 1.6, ease: [0.6, 0, 0.2, 1], delay: 0.25 }} />
         </>
       )}
-      <VersionSwitcher />
+      {switcher && <VersionSwitcher />}
     </div>
   );
 }

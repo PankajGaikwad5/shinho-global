@@ -27,52 +27,96 @@ const STRIP = [
   { img: U(MATS[19].img, 900), label: MATS[19].name },
 ];
 
-export default function About() {
+const STATEMENT = "SHINHO GLOBAL is the partner behind the surface. We source, develop and supply specialist films and finishes — manufactured at partner facilities — for businesses that sell them under their own brand.";
+
+// The parallax photo column. It owns its own ref and useScroll: when this lived in the parent, a page
+// passing `frameImg={null}` left the ref unattached and Motion threw "Target ref is defined but not
+// hydrated" — the hook ran with nothing to measure. Rendering the whole thing or not keeps them together.
+function Frame({ frameImg, inset, caption }) {
   const frame = useRef(null);
   const { scrollYProgress } = useScroll({ target: frame, offset: ["start end", "end start"] });
   const y = useTransform(scrollYProgress, [0, 1], ["-8%", "8%"]);
   const scale = useTransform(scrollYProgress, [0, 1], [1.18, 1.04]);
+  return (
+    <Reveal className="flex flex-[1_1_380px] flex-col gap-3.5">
+      <div ref={frame} className="relative aspect-[4/5] overflow-hidden bg-[#d8d2c8]">
+        <motion.div className="absolute inset-[-10%] bg-cover bg-center" style={{ y, scale, backgroundImage: `url(${frameImg})` }} />
+        {inset && (
+          <div className="absolute bottom-4 right-4 aspect-video w-[42%] overflow-hidden shadow-[0_30px_60px_rgba(0,0,0,.35)]">
+            {inset.video ? <Video media={inset.video} /> : <div className="h-full w-full bg-cover bg-center" style={{ backgroundImage: `url(${inset.img})` }} />}
+          </div>
+        )}
+      </div>
+      {caption && <span className="font-mono text-[10px] uppercase tracking-[.1em] text-[#76726b]">{caption}</span>}
+    </Reveal>
+  );
+}
+
+// Every prop defaults to V1's own content, so `/` renders exactly as before. Other pages (e.g. /cast-films)
+// render THIS component with their own content instead of a copy of it, so the two can never drift apart.
+export default function About({
+  id = "about",
+  eyebrow = "Who we are",
+  statement = STATEMENT,
+  rows = AUDIENCE,
+  frameImg = IMG.ceiling(1400),
+  inset = { video: VIDEO.slitter },
+  caption = "Architectural film application · Interior ceiling",
+  strip = STRIP,
+  note = null,
+  // `frameImg={null}` drops the photo column and runs the statement across the full width. Every page was
+  // rendering this section in the same shape, which made the whole site read as one repeated layout.
+  // V1 itself always passes a frame, so `/` is unchanged.
+}) {
+  const framed = Boolean(frameImg);
 
   return (
-    <section id="about" className="bg-bone text-[#151515]">
+    <section id={id} className="bg-bone text-[#151515]">
       <div className="mx-auto flex max-w-[1360px] flex-wrap items-start gap-[clamp(40px,6vw,96px)] px-[clamp(20px,4vw,56px)] py-[clamp(88px,11vw,160px)]">
-        <Reveal className="flex flex-[1_1_380px] flex-col gap-3.5">
-          <div ref={frame} className="relative aspect-[4/5] overflow-hidden bg-[#d8d2c8]">
-            <motion.div className="absolute inset-[-10%] bg-cover bg-center" style={{ y, scale, backgroundImage: `url(${IMG.ceiling(1400)})` }} />
-            <div className="absolute bottom-4 right-4 aspect-video w-[42%] overflow-hidden shadow-[0_30px_60px_rgba(0,0,0,.35)]">
-              <Video media={VIDEO.slitter} />
-            </div>
-          </div>
-          <span className="font-mono text-[10px] uppercase tracking-[.1em] text-[#76726b]">Architectural film application · Interior ceiling</span>
-        </Reveal>
+        {framed && <Frame frameImg={frameImg} inset={inset} caption={caption} />}
 
-        <div className="flex flex-[1.35_1_480px] flex-col gap-14 pt-2">
-          <span className="font-mono text-[11px] uppercase tracking-[.14em] text-[#5d5a55]">Who we are</span>
-          <Reveal as="p" className="text-[clamp(30px,3.3vw,50px)] leading-[1.1] font-normal [font-stretch:108%] tracking-[-.02em] [text-wrap:pretty]">
-            SHINHO GLOBAL is the partner behind the surface. We source, develop and supply specialist films and finishes — manufactured at partner facilities — for businesses that sell them under their own brand.
+        {/* Framed: photo left, words right, stacked. Frameless: statement left, rows right, side by side —
+            a different rhythm at the SAME type size. An earlier frameless version scaled the statement to
+            86px, which is fine for a short line and a wall of text for a paragraph. */}
+        <div className={framed
+          ? "flex flex-[1.35_1_480px] flex-col gap-14 pt-2"
+          : "grid flex-[1_1_100%] grid-cols-1 gap-x-[clamp(40px,6vw,96px)] gap-y-12 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)]"}>
+          <span className="font-mono text-[11px] uppercase tracking-[.14em] text-[#5d5a55] lg:col-span-2">{eyebrow}</span>
+          {/* Framed, the statement sits beside a photo and carries the section at V1's size. Frameless, it
+              is the widest thing on screen, and this copy is a four-sentence paragraph — at 50px that is
+              nine lines of shouting. It steps down so it reads as a statement, not a billboard. */}
+          <Reveal as="p" className={framed
+            ? "text-[clamp(30px,3.3vw,50px)] leading-[1.1] font-normal [font-stretch:108%] tracking-[-.02em] [text-wrap:pretty]"
+            : "max-w-[42ch] text-[clamp(21px,2.1vw,31px)] leading-[1.3] font-normal [font-stretch:106%] tracking-[-.015em] [text-wrap:pretty]"}>
+            {statement}
           </Reveal>
           <div className="flex flex-col">
-            {AUDIENCE.map(([t, d], i) => (
+            {rows.map(([t, d], i) => (
               <Reveal key={t} delay={i * 0.08}
-                className={`group flex flex-wrap items-baseline justify-between gap-x-8 gap-y-2 border-t border-[rgba(21,21,21,.2)] py-5 ${i === 3 ? "border-b" : ""}`}>
+                className={`group flex flex-wrap items-baseline justify-between gap-x-8 gap-y-2 border-t border-[rgba(21,21,21,.2)] py-5 ${i === rows.length - 1 ? "border-b" : ""}`}>
                 <span className="text-[clamp(22px,2vw,28px)] font-medium [font-stretch:115%] transition-transform duration-500 ease-cine group-hover:translate-x-3">{t}</span>
                 <span className="max-w-[360px] text-[15px] text-[#5d5a55]">{d}</span>
               </Reveal>
             ))}
           </div>
+          {note && <Reveal as="p" className={`max-w-[46ch] text-[17px] font-medium leading-[1.6] ${framed ? "" : "lg:col-span-2"}`}>{note}</Reveal>}
         </div>
       </div>
 
-      <div className="overflow-hidden bg-ink py-3" aria-label="Material reel">
-        <div className="flex w-max gap-3 [animation:marquee_70s_linear_infinite] hover:[animation-play-state:paused]">
-          {[...STRIP, ...STRIP].map((s, i) => (
-            <figure key={i} className="relative h-[clamp(180px,24vw,320px)] w-[clamp(240px,32vw,440px)] shrink-0 overflow-hidden">
-              {s.video ? <Video media={s.video} /> : <div className="h-full w-full bg-cover bg-center transition-transform duration-[1.4s] ease-cine hover:scale-110" style={{ backgroundImage: `url(${s.img})` }} />}
-              <figcaption className="pointer-events-none absolute bottom-3 left-3 font-mono text-[10px] uppercase tracking-[.12em] text-bone/85">{s.label}</figcaption>
-            </figure>
-          ))}
+      {strip && (
+        <div className="overflow-hidden bg-ink py-3" aria-label="Material reel">
+          <div className="flex w-max gap-3 [animation:marquee_70s_linear_infinite] hover:[animation-play-state:paused]">
+            {[...strip, ...strip].map((s, i) => (
+              <figure key={i} className="relative h-[clamp(180px,24vw,320px)] w-[clamp(240px,32vw,440px)] shrink-0 overflow-hidden">
+                {s.video ? <Video media={s.video} /> : <div className="h-full w-full bg-cover bg-center transition-transform duration-[1.4s] ease-cine hover:scale-110" style={{ backgroundImage: `url(${s.img})` }} />}
+                {/* Scrim: the caption sits on the image, so it needs a ground to stay readable. */}
+                <div className="pointer-events-none absolute inset-x-0 bottom-0 h-1/2 bg-[linear-gradient(180deg,rgba(11,11,12,0)_0%,rgba(11,11,12,.72)_100%)]" />
+                <figcaption className="pointer-events-none absolute bottom-3 left-3 font-mono text-[10px] uppercase tracking-[.12em] text-bone/85">{s.label}</figcaption>
+              </figure>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
     </section>
   );
 }

@@ -3,12 +3,18 @@
 @import "tailwindcss/theme.css" layer(theme);
 @import "tailwindcss/utilities.css" layer(utilities);
 
-html,body{margin:0;background:#0b0b0c;-webkit-font-smoothing:antialiased}
-*{box-sizing:border-box}
-a{color:inherit;text-decoration:none}
-a:hover{color:#c2a274}
-button{font:inherit;color:inherit}
-::selection{background:#c2a274;color:#0b0b0c}
+/* These sit in @layer base, NOT unlayered. Unlayered CSS beats every @layer rule, and Tailwind's
+   utilities live in layer(utilities) — so an unlayered `a{color:inherit}` silently overrode `text-ink`
+   on every link. A "Request samples" button on a bone pill inherited bone from its section and rendered
+   as an empty white pill with no visible label. Same for `button{color:inherit}`. */
+@layer base {
+  html,body{margin:0;background:#0b0b0c;-webkit-font-smoothing:antialiased}
+  *{box-sizing:border-box}
+  a{color:inherit;text-decoration:none}
+  a:hover{color:#c2a274}
+  button{font:inherit;color:inherit}
+  ::selection{background:#c2a274;color:#0b0b0c}
+}
 
 /* ---------- Concept pages (/v1, /v2, /v3) — the baseline "/" never uses these ---------- */
 @theme {
