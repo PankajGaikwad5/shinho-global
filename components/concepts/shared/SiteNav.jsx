@@ -40,7 +40,9 @@ const menuFor = (base) => [
   // site they stay unlinked rather than pointing at a route that does not exist.
   { n: "03", label: "Manufacturing & Quality", href: base ? `${base}/manufacturing-quality` : null },
   { n: "04", label: "Catalogue", href: base ? `${base}/catalogue` : null },
-  { n: "05", label: "About", href: `${base || "/"}#about` },
+  // About has its own page in the /changes version. On the frozen site there is no such route, so it
+  // stays the homepage anchor it has always been.
+  { n: "05", label: "About", href: base ? `${base}/about` : "/#about" },
 ];
 
 // V1's own row styles, value for value.
@@ -49,14 +51,17 @@ const HAIR = "1px solid rgba(242,239,233,.12)";
 // that cannot fit at a fixed size, and it was scrolling under the logo. Every size is V1's, capped against
 // the viewport height: on a normal screen these resolve to V1's exact values, on a short one they shrink
 // instead of overflowing.
-const ROW = { display: "flex", alignItems: "baseline", gap: "28px", borderTop: HAIR, padding: "min(14px,1.5vh) 0" };
+const ROW = { display: "flex", alignItems: "baseline", gap: "22px", borderTop: HAIR, padding: "min(11px,1.3vh) 0" };
 const NUM = { fontFamily: MONO, fontSize: "11px", color: "#8d8982" };
-const LABEL = { fontSize: "min(clamp(34px,5.5vw,76px),8vh)", fontWeight: "500", fontStretch: "118%", letterSpacing: "-.02em", lineHeight: "1" };
+// Stepped down on 19 Nov. At 5.5vw/76px the rows filled the screen: "OEM Partnerships" broke to two
+// lines on a phone and the desktop menu read as a shout rather than a list. The vh cap still shrinks
+// it further on a short window instead of letting the menu overflow.
+const LABEL = { fontSize: "min(clamp(26px,4.2vw,56px),6.2vh)", fontWeight: "500", fontStretch: "118%", letterSpacing: "-.02em", lineHeight: "1.04" };
 // Five sub-items at V1 sub-row size would double the height of the menu and push it off the screen.
 // They stay secondary: one indented block, no hairline of their own, so the five main rows still read
 // at V1's scale and the whole menu fits a screen without scrolling.
 const SUB_LIST = { display: "flex", flexDirection: "column", padding: "2px 0 min(16px,1.6vh) clamp(28px,6vw,86px)" };
-const SUB_LABEL = { fontSize: "min(clamp(15px,1.5vw,19px),2.2vh)", fontWeight: "400", fontStretch: "108%", lineHeight: "1.5", padding: "min(5px,.6vh) 0" };
+const SUB_LABEL = { fontSize: "min(clamp(14px,1.3vw,17px),2.1vh)", fontWeight: "400", fontStretch: "108%", lineHeight: "1.5", padding: "min(4px,.55vh) 0" };
 
 export default function SiteNav({ current, base = "" }) {
   const MENU = menuFor(base);

@@ -31,6 +31,10 @@ gsap.registerPlugin(ScrollTrigger);
 // a two-line block is twice as tall and travels twice as far. The split stops reading like V1's.
 // 6.5vw is the ceiling for one line — 26 characters at this tracking and font-stretch come to about 94%
 // of the viewport, so there is no room above it. Do not go higher, and do not "fix" the size by wrapping.
+//
+// THE FLOOR IS 20px, NOT 25px. The 94% relationship only holds while the vw term governs; a floor of 25px
+// took over below 385px and pushed a 26-character line past the edge of a small phone, where the sticky
+// parent clipped it. 20px binds only below 308px, which no phone is.
 // No padding on the block, as V1 has none. If the wording is ever shortened, put V1's clamp back.
 //
 // The caption no longer reads "Compounding & raw materials · Partner facility, Republic of Korea": point
@@ -57,7 +61,7 @@ export default function Heat() {
           <Video media={VIDEO.foundry} />
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(0,0,0,0)_40%,rgba(0,0,0,.7)_100%)]" />
         </div>
-        <div className="pointer-events-none relative z-10 text-center text-[clamp(25px,6.5vw,110px)] leading-[.86] font-medium [font-stretch:122%] tracking-[-.045em] whitespace-nowrap mix-blend-difference">
+        <div className="pointer-events-none relative z-10 text-center text-[clamp(20px,6.5vw,110px)] leading-[.86] font-medium [font-stretch:122%] tracking-[-.045em] whitespace-nowrap mix-blend-difference">
           <div ref={top}>Heat. Pressure. Precision.</div>
           <div ref={bottom}>How a surface takes shape.</div>
         </div>

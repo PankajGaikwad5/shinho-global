@@ -25,7 +25,7 @@ export default function EnquirySection({ video, logo, form }) {
       <div className="relative bg-[linear-gradient(180deg,color-mix(in_srgb,var(--color-ink)_94%,transparent),color-mix(in_srgb,var(--color-ink)_82%,transparent)_40%,color-mix(in_srgb,var(--color-ink)_97%,transparent))] px-[clamp(20px,4vw,56px)] pt-[clamp(110px,14vw,200px)] pb-24">
         <div className="mx-auto max-w-[1360px]">
           <span className="font-mono text-[11px] uppercase tracking-[.14em] text-ash">Enquiries</span>
-          <Lines lines={["Tell us what you", "need to make."]} className="mt-7 text-[clamp(52px,9vw,148px)] leading-[.9] font-medium [font-stretch:122%] tracking-[-.045em]" />
+          <Lines lines={["Tell us what you", "need to make."]} className="mt-7 text-[clamp(32px,9vw,148px)] leading-[.9] font-medium [font-stretch:122%] tracking-[-.045em]" />
 
           <div className="mt-[clamp(56px,7vw,96px)] grid grid-cols-1 gap-[clamp(48px,6vw,96px)] lg:grid-cols-[minmax(0,.8fr)_minmax(0,1.2fr)]">
             <Reveal className="flex flex-col gap-10">

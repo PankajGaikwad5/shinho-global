@@ -49,7 +49,7 @@ export default function Showroom() {
           <div className="flex flex-wrap items-end justify-between gap-x-12 gap-y-6">
             <div className="flex max-w-[860px] flex-col gap-5">
               <span className={K}>Applications</span>
-              <Lines lines={["A few rooms,", "a lot of surface."]} className="text-[clamp(44px,6vw,96px)] leading-[.92] font-medium [font-stretch:120%] tracking-[-.035em]" />
+              <Lines lines={["A few rooms,", "a lot of surface."]} className="text-[clamp(26px,6vw,96px)] leading-[.92] font-medium [font-stretch:120%] tracking-[-.035em]" />
             </div>
             <Reveal as="p" className="max-w-[400px] text-[15px] leading-[1.6] text-ash [text-wrap:pretty]">
               Interior examples showing where these films are applied. Illustrations of possible applications,
@@ -73,7 +73,7 @@ export default function Showroom() {
           <Chapter key={r.n} len={CHAPTERS[i].len} align={i % 2 ? "left" : "right"}>
             <div className={PANEL}>
               <span className={K}>Application {r.n}</span>
-              <h3 className="mt-3 text-[clamp(34px,4vw,64px)] leading-[.95] font-medium [font-stretch:115%] tracking-[-.04em] text-bone">{r.name}</h3>
+              <h3 className="mt-3 text-[clamp(26px,4vw,64px)] leading-[.95] font-medium [font-stretch:115%] tracking-[-.04em] text-bone">{r.name}</h3>
               <p className="mt-4 text-[16px] leading-[1.65] text-ash">{r.lede}</p>
               <p className="mt-5 text-[13px] text-stone">Click a finished surface to try another finish.</p>
             </div>

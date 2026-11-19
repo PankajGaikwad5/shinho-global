@@ -70,7 +70,7 @@ export default function Layers() {
           <div className="flex flex-wrap items-end justify-between gap-x-12 gap-y-6">
             <div className="flex max-w-[860px] flex-col gap-5">
               <span className="font-mono text-[11px] uppercase tracking-[.14em] text-brass">Supply routes</span>
-              <Lines lines={["Two ways to", "build your range."]} className="text-[clamp(44px,6vw,96px)] leading-[.92] font-medium [font-stretch:120%] tracking-[-.035em]" />
+              <Lines lines={["Two ways to", "build your range."]} className="text-[clamp(26px,6vw,96px)] leading-[.92] font-medium [font-stretch:120%] tracking-[-.035em]" />
             </div>
             <Reveal as="p" className="max-w-[400px] text-[15px] leading-[1.6] text-ash [text-wrap:pretty]">
               Choose a route. The construction below is drawn for the one you pick.

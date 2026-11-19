@@ -18,7 +18,7 @@ export default function Enquiry() {
     <section id="samples" className="relative overflow-hidden bg-ink text-bone">
       <div className="mx-auto max-w-[1360px] px-[clamp(20px,4vw,56px)] pt-[clamp(110px,14vw,200px)] pb-24">
         <span className="font-mono text-[11px] uppercase tracking-[.14em] text-ash">Samples &amp; enquiries</span>
-        <Lines lines={["Request samples.", "Discuss your product."]} className="mt-7 text-[clamp(52px,9vw,148px)] leading-[.9] font-medium [font-stretch:122%] tracking-[-.045em]" />
+        <Lines lines={["Request samples.", "Discuss your product."]} className="mt-7 text-[clamp(32px,9vw,148px)] leading-[.9] font-medium [font-stretch:122%] tracking-[-.045em]" />
 
         {/* The overview, above the form. One hairline band in the site's own language — no bordered card,
             no drawn icon, no stack of meta lines. */}

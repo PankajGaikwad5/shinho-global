@@ -38,6 +38,12 @@
   .concept :where(h1,h2,h3,h4,p,figure,blockquote,ul,ol){margin:0;padding:0}
   .concept :where(button){background:none;border:0;padding:0;cursor:pointer;text-align:inherit}
   .concept :where(img,video,canvas){display:block;max-width:100%}
+
+  /* No sideways scroll on a phone. One stray wide element used to drag the whole page across, and the
+     cause is never where the symptom shows. `clip`, NOT `hidden`: overflow:hidden on an ancestor turns
+     it into a scroll container and silently kills every position:sticky inside it - and the hero, the
+     Layers stack and the Heat window are all sticky. clip keeps sticky working. */
+  .concept{overflow-x:clip}
 }
 
 /* Film grain overlay */

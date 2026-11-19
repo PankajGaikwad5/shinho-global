@@ -2,13 +2,12 @@ import ConceptShell from "@/components/concepts/shared/ConceptShell";
 import SiteNav from "@/components/concepts/shared/SiteNav";
 import Hero from "@/components/concepts/changes/Hero";
 import Lab from "@/components/concepts/changes/Lab";
-import About from "@/components/concepts/v1/About";
+import About from "@/components/concepts/changes/About";
 import Materials from "@/components/concepts/v1/Materials";
 import Manufacturing from "@/components/concepts/v1/Manufacturing";
 import Oem from "@/components/concepts/v1/Oem";
 import EnquirySection from "@/components/concepts/shared/EnquirySection";
 import SiteEnquiryForm from "@/components/concepts/shared/SiteEnquiryForm";
-import { ABOUT } from "@/lib/changes";
 import { FAMILIES } from "@/lib/brief";
 
 export const metadata = {
@@ -31,17 +30,9 @@ export default function ChangesHome() {
     <ConceptShell switcher={false}>
       <SiteNav base="/changes" />
       <Hero />
-      <About
-        statement={ABOUT.heading}
-        note={
-          <>
-            {ABOUT.paragraphs.map((p) => (
-              <span key={p} className="mb-4 block font-normal">{p}</span>
-            ))}
-            <span className="block font-semibold">{ABOUT.bold}</span>
-          </>
-        }
-      />
+      {/* Point 3's copy in a layout built for it — see components/concepts/changes/About.jsx.
+          V1's About was carrying four extra paragraphs in a column meant for one statement. */}
+      <About />
       {/* V1's own sections and order. Point 13: no placeholder "#" links — each family panel points at its
           page, or at the enquiry where that page does not exist yet. */}
       <Materials

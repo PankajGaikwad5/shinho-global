@@ -12,7 +12,7 @@ import { Lines, Reveal } from "../shared/Reveal";
 // (type scale, colours, hairlines, reveal motion) is V1's.
 //
 // On a phone the arc is hidden and the four stages stack, as the client asked.
-const STAGES = [
+export const STAGES = [
   ["Choose", "Tell us what is missing. Choose the film, finish and supply format."],
   ["Test", "Review samples with your team. Check the appearance and performance you need."],
   ["Approve", "Agree the product, trial quantity, price and packaging."],
@@ -45,7 +45,7 @@ export default function Curve() {
         <div className="mb-[clamp(44px,5vw,80px)] flex flex-wrap items-end justify-between gap-x-12 gap-y-6">
           <div className="flex max-w-[860px] flex-col gap-5">
             <span className="font-mono text-[11px] uppercase tracking-[.14em] text-stone">From sample to scale</span>
-            <Lines lines={["Choose. Test.", "Approve. Produce."]} className="text-[clamp(44px,6vw,96px)] leading-[.92] font-medium [font-stretch:120%] tracking-[-.035em]" />
+            <Lines lines={["Choose. Test.", "Approve. Produce."]} className="text-[clamp(26px,6vw,96px)] leading-[.92] font-medium [font-stretch:120%] tracking-[-.035em]" />
           </div>
           <Reveal as="p" className="max-w-[400px] text-[15px] leading-[1.6] text-ash [text-wrap:pretty]">
             From first samples to your branded product. Start from a finish we already make, or develop your own.

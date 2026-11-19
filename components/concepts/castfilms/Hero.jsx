@@ -29,7 +29,7 @@ export default function Hero() {
         <span className="font-mono text-[11px] uppercase tracking-[.14em] text-brass">Cast &amp; specialist films</span>
 
         <Lines as="h1" lines={OPENING.head}
-          className="text-[clamp(44px,7.4vw,118px)] leading-[.9] font-medium [font-stretch:122%] tracking-[-.04em]" />
+          className="text-[clamp(27px,7.4vw,118px)] leading-[.9] font-medium [font-stretch:122%] tracking-[-.04em]" />
 
         {/* The client's opening paragraph, in full. */}
         <Reveal as="p" delay={0.15} className="max-w-[780px] text-[clamp(17px,1.7vw,24px)] leading-[1.45] [font-stretch:108%] tracking-[-.01em] text-mist [text-wrap:pretty]">

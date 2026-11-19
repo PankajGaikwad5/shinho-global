@@ -4,18 +4,21 @@ import Materials from "@/components/concepts/v1/Materials";
 import EnquirySection from "@/components/concepts/shared/EnquirySection";
 import SiteEnquiryForm from "@/components/concepts/shared/SiteEnquiryForm";
 import { Lines, Reveal } from "@/components/concepts/shared/Reveal";
+import { CAST_PDF } from "@/lib/cast";
 
 export const metadata = {
   title: "Catalogue — SHINHO GLOBAL",
   description: "Explore the finishes. Build your shortlist.",
 };
 
-// Point 11 — the Catalogue page. Heading, text and the three buttons are the client's words.
+// Point 11 - the Catalogue page. Heading, text and the three buttons are the client's words.
 //
-// "Use the final approved catalogue": it has not been supplied, so View Catalogue and Download PDF have
-// nothing to point at. The client's pre-launch list also says every placeholder "#" link must become a
-// working page or action — so rather than ship two dead links, they are shown inactive with the reason.
-// Swap both for the real file the moment it arrives, and keep the selected finish codes in the enquiry.
+// View Catalogue and Download PDF serve CAST_PDF (public/SHINHO_GLOBAL_Cast_Films.pdf), the only
+// catalogue file we have. They were shown disabled until 19 Nov because that deck covers cast films
+// only, while this page lists every family; the user's call is that a working download of the deck we
+// have beats two dead buttons. The line under them names the document, so nobody downloads it expecting
+// the furniture foils. SWAP CAST_PDF FOR THE FULL CATALOGUE THE MOMENT THE CLIENT SENDS IT, and drop
+// that qualifier line with it.
 export default function Catalogue() {
   return (
     <ConceptShell switcher={false}>
@@ -32,11 +35,14 @@ export default function Catalogue() {
           </Reveal>
 
           <Reveal delay={0.2} className="mt-11 flex flex-wrap items-center gap-3.5">
-            <span className="inline-flex cursor-not-allowed items-center rounded-full border border-bone/20 px-[30px] py-[15px] text-[15px] font-medium text-bone/40" aria-disabled="true">View Catalogue</span>
-            <span className="inline-flex cursor-not-allowed items-center rounded-full border border-bone/20 px-[30px] py-[15px] text-[15px] font-medium text-bone/40" aria-disabled="true">Download PDF</span>
+            {/* Opens in a tab so the browser renders it; the second one saves it. */}
+            <a href={CAST_PDF} target="_blank" rel="noopener noreferrer"
+              className="inline-flex items-center rounded-full border border-bone/30 px-[30px] py-[15px] text-[15px] font-medium text-bone transition-colors duration-300 hover:border-bone/70">View Catalogue</a>
+            <a href={CAST_PDF} download
+              className="inline-flex items-center gap-3 rounded-full border border-bone/30 px-[30px] py-[15px] text-[15px] font-medium text-bone transition-colors duration-300 hover:border-bone/70">Download PDF <span aria-hidden="true">↓</span></a>
             <a href="#contact" className="inline-flex items-center gap-3 rounded-full bg-bone px-[30px] py-[15px] text-[15px] font-medium text-ink">Request These Samples <span aria-hidden="true">→</span></a>
           </Reveal>
-          <p className="mt-5 font-mono text-[11px] uppercase tracking-[.14em] text-dusk">Catalogue awaiting the final approved file</p>
+          <p className="mt-5 font-mono text-[11px] uppercase tracking-[.14em] text-dusk">Cast films · product overview · PDF · 15 pages — full finishes catalogue to follow</p>
         </div>
       </section>
 

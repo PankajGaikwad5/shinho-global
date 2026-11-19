@@ -3,9 +3,9 @@
 import { useEffect, useRef, useState } from "react";
 import { MONO } from "@/components/fonts";
 import { U, MATS } from "@/lib/materials";
-import { HERO_HINT, INTRO_CONTROLS, SEQUENCE } from "@/lib/changes";
-import { VIDEO } from "@/lib/media";
-import Video from "../shared/Video";
+import { HERO_HINT, SEQUENCE } from "@/lib/changes";
+import { STAGES } from "../oem/Curve";
+import RollStage from "./RollStage";
 
 // The 15 Nov brief's opening scroll, for /changes.
 //
@@ -35,30 +35,48 @@ const beatTravel = (p) => {
   const u = p*SEG, j = Math.min(SEG - 1, Math.floor(u)), g = clamp01((u - j - HOLD_A)/(1 - HOLD_A - HOLD_B));
   return PLATEAU[j] + (PLATEAU[j + 1] - PLATEAU[j])*easeIO(g);
 };
-const BACKDROP_Z = -19100;           // closing shot: like the original, it fades in only near the end and fills the frame
-const CLOSING_VIDEO = VIDEO.factoryNight; // stock placeholder — swap for the client's footage
 // Midpoints between messages: which chapter the HUD shows.
 const SPLITS = MSG_Z.slice(1).map((z, i) => -(MSG_Z[i] + z) / 2);
-// Panel clusters, one per message at the original density (12 per 3200 of depth), so the back half of the
-// sequence is as full as the front. 05 and 06 draw from all materials; 07 lands on the closing shot, as the original did.
+// Panel clusters, one per scene, at that scene's own depth — each carrying what the client's brief
+// (point 2) asks THAT scene to show. The clusters used to be one scene out of step: scene 02 ("wood,
+// fabric, metal") was showing cast swatches and scene 03 (cast films) was showing architectural.
+//
+// 01 and 05 have no cluster: RollStage is their visual, and scene 05 says "let the material remain
+// the focus". 07 has none either — "End on a clear screen."
+//
+// Scene 04 says any unmade finish must be marked as a concept. We cannot tell which of the finishes in
+// lib/materials.js are real products, so it shows catalogue finishes only and invents no variations to
+// mark. That is open question 1 for the client.
+//
+// Scene 03 is ONE panel, and its neighbours are pulled back so they do not drift into it. Panels stay
+// visible from 3600 of depth away, so a cluster centred 3200 ahead of a message is still in frame while
+// that message is being read — which is why an earlier version of scene 03 showed wood, marble, teal and
+// pearl at once, i.e. exactly the montage the client ruled out. Moving scene 04's cluster back to -10700
+// puts its nearest panel beyond that 3600 window at scene 03's hold.
 const CLUSTERS = [
-  { cat: 'cast', z: -3000, n: 12, spread: 3200 },
-  { cat: 'arch', z: -6200, n: 12, spread: 3200 },
-  { cat: 'deco', z: -9400, n: 12, spread: 3200 },
-  { cat: null, z: -12600, n: 12, spread: 3200, offset: 3 },
-  { cat: null, z: -15800, n: 12, spread: 3200, offset: 13 },
+  { cat: ['arch', 'deco'], z: -3000, n: 12, spread: 3000 },             // 02 wood, stone, metal
+  { cat: 'cast', z: -6900, n: 1, spread: 0 },                           // 03 one restrained visual
+  { cat: null, z: -10700, n: 11, spread: 2600, offset: 3 },             // 04 finish variations
+  { cat: null, z: -15800, n: 5, spread: 2600, offset: 13 },             // 06 thinning toward the close
 ];
-const H_STYLE = { margin: "0", fontSize: "clamp(76px,11vw,176px)", lineHeight: ".88", fontWeight: "500", fontStretch: "122%", letterSpacing: "-.045em" };
-const H3_STYLE = { ...H_STYLE, fontSize: "clamp(68px,9.4vw,152px)", lineHeight: ".9" };
+const H_STYLE = { margin: "0", fontSize: "clamp(40px,11vw,176px)", lineHeight: ".88", fontWeight: "500", fontStretch: "122%", letterSpacing: "-.045em" };
+const H3_STYLE = { ...H_STYLE, fontSize: "clamp(34px,9.4vw,152px)", lineHeight: ".9" };
 // V1's scenes are two or three short lines ("Behind Every / Surface."), so one size fits them all. The
 // client's scenes include full sentences ("Cast films for signs, graphics and protection."), and at V1's
 // size those overflow the card and rewrap into ragged, broken lines.
 //
 // So the size follows the LONGEST line rather than the number of lines. Each step keeps the line under
 // ~75vw at its own vw size, so a scene never rewraps and the breaks stay where the copy puts them.
-const H4_STYLE = { ...H_STYLE, fontSize: "clamp(52px,8.2vw,132px)", lineHeight: ".92" };
-const H5_STYLE = { ...H_STYLE, fontSize: "clamp(42px,6.6vw,106px)", lineHeight: ".95", letterSpacing: "-.035em" };
-const H6_STYLE = { ...H_STYLE, fontSize: "clamp(34px,5.4vw,88px)", lineHeight: "1", letterSpacing: "-.03em" };
+//
+// THE CLAMP FLOORS ARE PHONE SIZES, NOT DESKTOP ONES. They started at 76/68/52/42/34px, which is what
+// the vw term gives on a laptop - so on a 390px screen the FLOOR won and a 76px headline was forced
+// onto the card, overflowed it and rewrote the client's line breaks into ragged ones. Each floor is now
+// the size its own vw term gives at a 360px viewport (never under 26px), so the floor binds only below
+// 360px and on every real phone the vw term governs and the line fits. Raise a floor and you break
+// mobile; the vw number is the one that sets the look.
+const H4_STYLE = { ...H_STYLE, fontSize: "clamp(30px,8.2vw,132px)", lineHeight: ".92" };
+const H5_STYLE = { ...H_STYLE, fontSize: "clamp(26px,6.6vw,106px)", lineHeight: ".95", letterSpacing: "-.035em" };
+const H6_STYLE = { ...H_STYLE, fontSize: "clamp(26px,5.4vw,88px)", lineHeight: "1", letterSpacing: "-.03em" };
 const headStyle = (head) => {
   const longest = Math.max(...head.map((l) => l.length));
   if (longest <= 12) return head.length > 2 ? H3_STYLE : H_STYLE;
@@ -72,6 +90,8 @@ export default function Hero() {
   const heroRef = useRef(null), stageRef = useRef(null), sceneRef = useRef(null), panelsRef = useRef(null);
   const depthRef = useRef(null), hintRef = useRef(null), barRef = useRef(null);
   const look = useRef({x:0,y:0,tx:0,ty:0,dx:0,dy:0,drag:null});
+  // Camera travel, shared with RollStage so the roll arrives and leaves with its scene.
+  const st = useRef({ travel: 0 });
 
   useEffect(() => {
     const host = panelsRef.current; if (!host) return;
@@ -79,10 +99,10 @@ export default function Hero() {
     let seed = 11; const rnd = () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
     const panels = [];
     CLUSTERS.forEach(({cat, z: Z, n, spread, offset = 0}, ci) => {
-      const list = cat ? MATS.filter(m => m.cat === cat) : MATS;
+      const list = !cat ? MATS : Array.isArray(cat) ? MATS.filter(m => cat.includes(m.cat)) : MATS.filter(m => m.cat === cat);
       for (let k = 0; k < n; k++) {
         const m = cat ? list[k % list.length] : list[(k*5 + offset) % list.length];
-        const z = Z + spread*.47 - (k/(n - 1))*spread + (rnd() - .5)*240;
+        const z = Z + spread*.47 - (n > 1 ? k/(n - 1) : .47)*spread + (rnd() - .5)*240;
         const a = k*2.399 + ci*1.1 + rnd()*.4;
         const r = (ci === 0 && k < 4 ? 820 : 620) + rnd()*440;
         const x = Math.cos(a)*r*1.5, y = Math.sin(a)*r*.8;
@@ -157,6 +177,7 @@ export default function Hero() {
       if (hintRef.current && hint !== lastHint) { lastHint = hint; hintRef.current.style.opacity = String(hint); }
       const depth = (t/100).toFixed(1).padStart(5,'0') + ' m';
       if (depthRef.current && depth !== lastDepth) { lastDepth = depth; depthRef.current.textContent = depth; }
+      st.current.travel = travel;
     };
 
     const tick = (now) => {
@@ -174,12 +195,31 @@ export default function Hero() {
     };
   }, []);
 
-  const stageDown = (e) => { if (e.pointerType === 'touch') return; look.current.drag = {x:e.clientX,y:e.clientY}; try { e.currentTarget.setPointerCapture(e.pointerId); } catch {} };
+  // DRAG-TO-LOOK MUST NOT EAT CLICKS.
+  //
+  // This used to call setPointerCapture on pointerdown. Pointer capture retargets the whole gesture to
+  // the capture element - including the click that follows - so a click that started on a button was
+  // delivered to the stage instead of the button. Scene 01's and scene 07's CTAs looked alive and did
+  // nothing, and so did anything else placed inside the stage.
+  //
+  // Capture is now taken only once the pointer has really moved, and never for a gesture that began on
+  // a link or a button. A press that does not move stays a click.
+  const DRAG_SLOP = 4;   // px of movement before a press becomes a drag
+  const stageDown = (e) => {
+    if (e.pointerType === 'touch') return;
+    if (e.target && e.target.closest && e.target.closest('a,button')) return;
+    look.current.drag = { x: e.clientX, y: e.clientY, id: e.pointerId, held: false };
+  };
   const stageMove = (e) => {
     const L = look.current; if (!L.drag) return;
+    if (!L.drag.held) {
+      if (Math.abs(e.clientX - L.drag.x) + Math.abs(e.clientY - L.drag.y) < DRAG_SLOP) return;
+      L.drag.held = true;
+      try { e.currentTarget.setPointerCapture(L.drag.id); } catch {}
+    }
     L.dx = Math.max(-38, Math.min(38, L.dx + (e.clientX - L.drag.x)*.08));
     L.dy = Math.max(-22, Math.min(22, L.dy - (e.clientY - L.drag.y)*.06));
-    L.drag = {x:e.clientX,y:e.clientY};
+    L.drag = { x: e.clientX, y: e.clientY, id: L.drag.id, held: true };
   };
   const stageUp = () => { look.current.drag = null; };
 
@@ -194,7 +234,11 @@ export default function Hero() {
   return (
     <section ref={heroRef} id="top" style={{ position: "relative", height: SCROLL_LENGTH + 'vh', background: heroBg, transition: "background .8s ease" }}>
       <div ref={stageRef} onPointerDown={stageDown} onPointerMove={stageMove} onPointerUp={stageUp} onPointerCancel={stageUp} style={{ position: "sticky", top: "0", height: "100vh", minHeight: "560px", overflow: "hidden", perspective: "1000px", perspectiveOrigin: "50% 50%", color: heroInk, cursor: "grab", touchAction: "pan-y", userSelect: "none" }}>
-        <div ref={sceneRef} style={{ position: "absolute", left: "50%", top: "50%", width: "0", height: "0", transformStyle: "preserve-3d" }}>
+        {/* Scene 01's film winding onto a roll and scene 05's roll + carton. Behind the message cards,
+            never in front: the opening rules say words must never be covered by moving products. */}
+        <RollStage st={st} plateaus={[PLATEAU[0], PLATEAU[4]]} />
+
+        <div ref={sceneRef} style={{ position: "absolute", left: "50%", top: "50%", width: "0", height: "0", transformStyle: "preserve-3d", zIndex: 1 }}>
           <div ref={panelsRef} style={{ position: "absolute", left: "0", top: "0", transformStyle: "preserve-3d", color: heroMuted }}></div>
 
           {SEQUENCE.map((m, i) => {
@@ -206,6 +250,21 @@ export default function Hero() {
                   {m.head.map((line, j) => <span key={j} style={{ display: "block" }}>{line}</span>)}
                 </Tag>
                 <p className="v1h-sub" style={{ margin: "6px 0 0", maxWidth: "900px", fontSize: "clamp(22px,2.1vw,32px)", lineHeight: "1.35", fontWeight: "400", fontStretch: "108%", letterSpacing: "-.01em", color: heroMuted, willChange: "opacity,transform" }}>{m.sub}</p>
+                {/* Scene 06: "Show a short preview of the four-stage process." Titles only — the opening
+                    rules forbid long paragraphs here. STAGES is the OEM page's own list, so the four
+                    names cannot drift from the four-stage curve. */}
+                {m.stages && (
+                  <div className="v1h-sub" style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", alignItems: "center", gap: "18px", marginTop: "4px" }}>
+                    {STAGES.map(([title], k) => (
+                      <span key={title} style={{ display: "inline-flex", alignItems: "center", gap: "18px" }}>
+                        {k > 0 && <span style={{ width: "26px", height: "1px", background: heroLine }}></span>}
+                        <span style={{ display: "inline-flex", alignItems: "baseline", gap: "8px", fontFamily: MONO, fontSize: "11px", letterSpacing: ".14em", textTransform: "uppercase", color: heroMuted }}>
+                          <span style={{ color: "#c2a274" }}>{String(k + 1).padStart(2, '0')}</span>{title}
+                        </span>
+                      </span>
+                    ))}
+                  </div>
+                )}
                 {/* Scene 1 and scene 7 carry the client's buttons; the other scenes carry none. */}
                 {m.cta && (
                   <div className="v1h-sub" style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: "14px", marginTop: "10px", pointerEvents: "auto" }}>
@@ -220,10 +279,10 @@ export default function Hero() {
             );
           })}
 
-          <div data-depth={BACKDROP_Z} style={{ position: "absolute", left: "0", top: "0", width: "2800px", height: "1580px", transform: `translate(-50%,-50%) translateZ(${BACKDROP_Z}px)`, background: "#111", overflow: "hidden", pointerEvents: "none", opacity: 0, visibility: "hidden" }}>
-            <Video media={CLOSING_VIDEO} active={chapter >= SEQUENCE.length - 2} />
-            <div style={{ position: "absolute", inset: "0", background: "linear-gradient(180deg,rgba(11,11,12,.55),rgba(11,11,12,.15) 40%,rgba(11,11,12,.7))" }}></div>
-          </div>
+          {/* Scene 07 is deliberately empty. The client: "End on a clear screen. Keep the words still
+              and easy to read." V1 closed on a stock aerial of a factory at night (VIDEO.factoryNight),
+              which also breaks the standing rule that no stock footage stands in for our production.
+              Do not put a visual back here. */}
         </div>
 
         <div style={{ position: "absolute", inset: "0", pointerEvents: "none", background: `radial-gradient(ellipse at 50% 50%,rgba(0,0,0,0) 45%,${vignette} 100%)` }}></div>
@@ -232,12 +291,10 @@ export default function Hero() {
           <div style={{ display: "flex", flexDirection: "column", gap: "10px", minWidth: "220px" }}>
             <span style={{ fontFamily: MONO, fontSize: "11px", letterSpacing: ".12em", textTransform: "uppercase", color: heroMuted }}>{String(chapter + 1).padStart(2, '0')} / {total} · <span ref={depthRef}>00.0 m</span></span>
             <span style={{ fontSize: "16px", fontWeight: "500", fontStretch: "110%" }}>{SEQUENCE[chapter].label}</span>
-            {/* Opening rules: a visitor can go straight to the products. */}
-            <div style={{ display: "flex", gap: "18px", pointerEvents: "auto" }}>
-              {INTRO_CONTROLS.map(([label, href]) => (
-                <a key={label} href={href} style={{ fontFamily: MONO, fontSize: "11px", letterSpacing: ".14em", textTransform: "uppercase", color: heroInk, borderBottom: `1px solid ${heroLine}`, paddingBottom: "3px" }}>{label}</a>
-              ))}
-            </div>
+            {/* The client's opening rules ask for Explore Materials / Skip Intro here. The user took them
+                out of the corner block on 19 Nov — they crowded the chapter label. Scene 01 still carries
+                Explore Materials as a button, so the way past the opening is not lost; INTRO_CONTROLS stays
+                in lib/changes.js as the record of what was asked for. */}
           </div>
           <span ref={hintRef} style={{ fontFamily: MONO, fontSize: "11px", letterSpacing: ".14em", textTransform: "uppercase", color: heroMuted }}>{HERO_HINT}</span>
           {/* No light/dark toggle: it came from the design port, nobody asked for it, and the brief says

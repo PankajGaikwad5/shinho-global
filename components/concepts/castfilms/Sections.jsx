@@ -107,7 +107,7 @@ export function Technical() {
       <div className="mx-auto mb-12 flex max-w-[1360px] flex-wrap items-end justify-between gap-x-12 gap-y-6 px-[clamp(20px,4vw,56px)]">
         <div className="flex max-w-[820px] flex-col gap-5">
           <span className="font-mono text-[11px] uppercase tracking-[.14em] text-stone">Technical detail</span>
-          <Lines lines={["Specification,", "by grade."]} className="text-[clamp(44px,6vw,96px)] leading-[.92] font-medium [font-stretch:120%] tracking-[-.035em]" />
+          <Lines lines={["Specification,", "by grade."]} className="text-[clamp(26px,6vw,96px)] leading-[.92] font-medium [font-stretch:120%] tracking-[-.035em]" />
         </div>
         <Reveal as="p" className="max-w-[400px] text-[15px] leading-[1.6] text-ash [text-wrap:pretty]">{SPEC.intro}</Reveal>
       </div>

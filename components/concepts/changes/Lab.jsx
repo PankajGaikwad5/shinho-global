@@ -15,11 +15,23 @@ import { U, MATS, CATL } from "@/lib/materials";
 export default function Lab() {
   const [labIdx, setLabIdx] = useState(7);
   const [exploded, setExploded] = useState(false);
+  const [narrow, setNarrow] = useState(false);
   const labStageRef = useRef(null), plateRef = useRef(null), topRef = useRef(null);
   const pl = useRef({rx:-6,ry:18,rz:0,spin:0,hx:0,hy:0,drag:null});
   const explodedRef = useRef(false);
 
   useEffect(() => { explodedRef.current = exploded; }, [exploded]);
+
+  // The stage is four absolutely-positioned overlays arranged round a centred plate. That needs width:
+  // at 390px the two top blocks sit on top of the plate and the twenty swatches wrap into nine rows that
+  // run off the bottom of the stage. Below 860px the same parts are laid out in normal flow instead.
+  useEffect(() => {
+    const q = matchMedia("(max-width: 860px)");
+    const on = () => setNarrow(q.matches);
+    on();
+    q.addEventListener("change", on);
+    return () => q.removeEventListener("change", on);
+  }, []);
 
   useEffect(() => {
     let last, raf;
@@ -62,41 +74,67 @@ export default function Lab() {
   const layerToggleLabel = exploded ? 'Assemble layers' : 'Separate layers';
   const toggleExploded = () => { if (exploded) pl.current.spin = 0; setExploded(!exploded); };
 
+  // One set of parts, two arrangements. Wide: overlays round the plate, as the port has it. Narrow:
+  // stacked in flow, and the swatch row scrolls sideways instead of wrapping into a wall.
+  const stageStyle = {
+    position: "relative", display: "flex", perspective: "1500px", cursor: "grab",
+    touchAction: "pan-y", userSelect: "none",
+    background: "radial-gradient(ellipse at 50% 38%,#2a2c2f 0%,#161718 65%)",
+    borderTop: "1px solid rgba(242,239,233,.1)", borderBottom: "1px solid rgba(242,239,233,.1)",
+    ...(narrow
+      ? { flexDirection: "column", alignItems: "stretch", gap: "26px", padding: "26px 20px" }
+      : { minHeight: "680px", alignItems: "center", justifyContent: "center" }),
+  };
+  const idStyle = narrow
+    ? { display: "flex", flexDirection: "column", gap: "8px" }
+    : { position: "absolute", top: "28px", left: "28px", display: "flex", flexDirection: "column", gap: "8px", maxWidth: "40%" };
+  const specStyle = narrow
+    ? { display: "flex", flexWrap: "wrap", gap: "14px 26px" }
+    : { position: "absolute", top: "28px", right: "28px", display: "flex", flexDirection: "column", gap: "14px", textAlign: "right", maxWidth: "30%" };
+  const barStyle = narrow
+    ? { display: "flex", flexDirection: "column", gap: "16px" }
+    : { position: "absolute", left: "28px", right: "28px", bottom: "24px", display: "flex", flexWrap: "wrap", gap: "16px", alignItems: "flex-end", justifyContent: "space-between" };
+  const swatchStyle = narrow
+    ? { display: "flex", gap: "6px", overflowX: "auto", paddingBottom: "4px" }
+    : { display: "flex", gap: "6px", flexWrap: "wrap", maxWidth: "min(760px,100%)" };
+
   return (
     <section id="lab" data-screen-label="04 Material Lab" style={{ background: "#161718", color: "#f2efe9", padding: "clamp(88px,10vw,140px) clamp(20px,4vw,56px)" }}>
       <div style={{ maxWidth: "1360px", margin: "0 auto" }}>
         <div style={{ display: "flex", flexWrap: "wrap", gap: "24px 48px", alignItems: "flex-end", justifyContent: "space-between", marginBottom: "40px" }}>
           <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
             <span style={{ fontFamily: MONO, fontSize: "11px", letterSpacing: ".14em", textTransform: "uppercase", color: "#8d8982" }}>Material Lab</span>
-            <h2 style={{ margin: "0", fontSize: "clamp(44px,6vw,96px)", lineHeight: ".92", fontWeight: "500", fontStretch: "120%", letterSpacing: "-.035em" }}>Handle the surface.</h2>
+            <h2 style={{ margin: "0", fontSize: "clamp(26px,6vw,96px)", lineHeight: ".92", fontWeight: "500", fontStretch: "120%", letterSpacing: "-.035em" }}>Handle the surface.</h2>
           </div>
           <p style={{ margin: "0", maxWidth: "360px", fontSize: "15px", lineHeight: "1.6", color: "#9a968f" }}>Turn a sample in the light, swap its finish and separate its layers to see how it is built.</p>
         </div>
 
-        <div ref={labStageRef} onPointerDown={labDown} onPointerMove={labMove} onPointerUp={labUp} onPointerCancel={labUp} onPointerLeave={labLeave} style={{ position: "relative", minHeight: "680px", display: "flex", alignItems: "center", justifyContent: "center", perspective: "1500px", cursor: "grab", touchAction: "pan-y", userSelect: "none", background: "radial-gradient(ellipse at 50% 38%,#2a2c2f 0%,#161718 65%)", borderTop: "1px solid rgba(242,239,233,.1)", borderBottom: "1px solid rgba(242,239,233,.1)" }}>
-          <div style={{ position: "absolute", top: "28px", left: "28px", display: "flex", flexDirection: "column", gap: "8px", maxWidth: "40%" }}>
+        <div ref={labStageRef} onPointerDown={labDown} onPointerMove={labMove} onPointerUp={labUp} onPointerCancel={labUp} onPointerLeave={labLeave} style={stageStyle}>
+          <div style={idStyle}>
             <span style={{ fontFamily: MONO, fontSize: "11px", letterSpacing: ".12em", textTransform: "uppercase", color: "#c2a274" }}>{lab.code}</span>
             <span style={{ fontSize: "clamp(28px,3.4vw,52px)", lineHeight: "1", fontWeight: "500", fontStretch: "118%", letterSpacing: "-.03em" }}>{lab.name}</span>
             <span style={{ fontFamily: MONO, fontSize: "11px", letterSpacing: ".08em", textTransform: "uppercase", color: "#8d8982" }}>{lab.cat}</span>
           </div>
-          <div style={{ position: "absolute", top: "28px", right: "28px", display: "flex", flexDirection: "column", gap: "14px", textAlign: "right", maxWidth: "30%" }}>
+          <div style={specStyle}>
             <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}><span style={{ fontFamily: MONO, fontSize: "10px", letterSpacing: ".12em", textTransform: "uppercase", color: "#8d8982" }}>Finish</span><span style={{ fontSize: "15px" }}>{lab.finish}</span></div>
             <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}><span style={{ fontFamily: MONO, fontSize: "10px", letterSpacing: ".12em", textTransform: "uppercase", color: "#8d8982" }}>Applications</span><span style={{ fontSize: "15px" }}>{lab.apps}</span></div>
             <div style={{ display: "flex", flexDirection: "column", gap: "4px", opacity: layerOp, transition: "opacity .6s ease" }}><span style={{ fontFamily: MONO, fontSize: "10px", letterSpacing: ".12em", textTransform: "uppercase", color: "#8d8982" }}>Construction, top to base</span><span style={{ fontSize: "15px", lineHeight: "1.5" }}>Protective top layer<br />Decorative / cast film<br />Adhesive system<br />Substrate</span></div>
           </div>
 
-          <div style={{ position: "absolute", left: "50%", top: "74%", width: "360px", height: "60px", marginLeft: "-180px", borderRadius: "50%", background: "radial-gradient(ellipse,rgba(0,0,0,.6),rgba(0,0,0,0) 70%)", filter: "blur(10px)" }}></div>
-          <div ref={plateRef} style={{ position: "relative", width: "min(300px,56vw)", aspectRatio: "3/4", transformStyle: "preserve-3d" }}>
+          {/* Cast shadow. Absolutely centred and 360px wide, so it is wider than a phone and has no
+              plate hovering over it once the stage is in flow. */}
+          {!narrow && <div style={{ position: "absolute", left: "50%", top: "74%", width: "360px", height: "60px", marginLeft: "-180px", borderRadius: "50%", background: "radial-gradient(ellipse,rgba(0,0,0,.6),rgba(0,0,0,0) 70%)", filter: "blur(10px)" }}></div>}
+          <div ref={plateRef} style={{ position: "relative", width: narrow ? "min(300px,66vw)" : "min(300px,56vw)", alignSelf: "center", aspectRatio: "3/4", transformStyle: "preserve-3d" }}>
             <div style={{ position: "absolute", inset: "0", transform: l0T, transition: "transform 1s cubic-bezier(.6,0,.2,1)", background: "linear-gradient(135deg,#8d887f,#6c675f)" }}></div>
             <div style={{ position: "absolute", inset: "0", transform: l1T, transition: "transform 1s cubic-bezier(.6,0,.2,1)", background: "rgba(214,190,140,.26)", border: "1px solid rgba(214,190,140,.55)" }}></div>
             <div style={{ position: "absolute", inset: "0", transform: l2T, transition: "transform 1s cubic-bezier(.6,0,.2,1)", background: `#333 url(${lab.img}) center/cover` }}></div>
             <div ref={topRef} style={{ position: "absolute", inset: "0", transform: l3T, transition: "transform 1s cubic-bezier(.6,0,.2,1)", border: "1px solid rgba(255,255,255,.16)" }}></div>
           </div>
 
-          <div style={{ position: "absolute", left: "28px", right: "28px", bottom: "24px", display: "flex", flexWrap: "wrap", gap: "16px", alignItems: "flex-end", justifyContent: "space-between" }}>
-            <div style={{ display: "flex", gap: "6px", flexWrap: "wrap", maxWidth: "min(760px,100%)" }}>
+          <div style={barStyle}>
+            <div style={swatchStyle}>
               {swatches.map((s, i) => (
-                <button key={i} onClick={s.select} title={s.name} style={{ width: "34px", height: "34px", padding: "0", cursor: "pointer", border: "0", background: `#333 url(${s.thumb}) center/cover`, outline: `1px solid ${s.ring}`, outlineOffset: "3px", transition: "outline-color .25s ease" }}></button>
+                <button key={i} onClick={s.select} title={s.name} style={{ width: "34px", height: "34px", flex: "0 0 auto", padding: "0", cursor: "pointer", border: "0", background: `#333 url(${s.thumb}) center/cover`, outline: `1px solid ${s.ring}`, outlineOffset: "3px", transition: "outline-color .25s ease" }}></button>
             ))}
             </div>
             <div style={{ display: "flex", gap: "18px", alignItems: "center" }}>
