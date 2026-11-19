@@ -12,10 +12,16 @@ const NEXT = [
 ];
 
 // `logo`: "light" | "dark" shows the real logo artwork in the footer (V4–V8); omitted keeps the text wordmark (V1–V3).
-export default function EnquirySection({ video = VIDEO.factoryNight, logo }) {
+// `form`: the form to render. Defaults to the long concept form, so the frozen concept pages (/, /v1, /v2,
+// /v3) are unchanged; the real site passes <SiteEnquiryForm />, which is the client's short form.
+export default function EnquirySection({ video, logo, form }) {
+  // The real pages (the ones that pass `form`) sit on a material rather than V1's night-city plate: it is
+  // calmer behind a form, and it is a finish rather than a factory. Concepts that pass nothing keep V1's
+  // own clip, and V2/V3 pass their own.
+  const bg = video || (form ? VIDEO.marble : VIDEO.factoryNight);
   return (
     <section id="contact" className="relative overflow-hidden text-bone">
-      <div className="absolute inset-0"><Video media={video} /></div>
+      <div className="absolute inset-0"><Video media={bg} /></div>
       <div className="relative bg-[linear-gradient(180deg,color-mix(in_srgb,var(--color-ink)_94%,transparent),color-mix(in_srgb,var(--color-ink)_82%,transparent)_40%,color-mix(in_srgb,var(--color-ink)_97%,transparent))] px-[clamp(20px,4vw,56px)] pt-[clamp(110px,14vw,200px)] pb-24">
         <div className="mx-auto max-w-[1360px]">
           <span className="font-mono text-[11px] uppercase tracking-[.14em] text-ash">Enquiries</span>
@@ -33,13 +39,24 @@ export default function EnquirySection({ video = VIDEO.factoryNight, logo }) {
                   </li>
                 ))}
               </ol>
-              <div className="flex flex-col gap-2">
-                <span className="font-mono text-[10px] uppercase tracking-[.16em] text-ash">Direct</span>
-                <a href={`mailto:${EMAIL}`} className="text-[clamp(18px,1.6vw,22px)] font-medium [font-stretch:112%]">{EMAIL}</a>
-              </div>
+              {/* The real pages show no address: the client asked that the form and the sample buttons
+                  are the contact route. The concepts keep the address they were shown with. */}
+              {form ? (
+                <div className="flex flex-col gap-2">
+                  <span className="font-mono text-[10px] uppercase tracking-[.16em] text-ash">Response</span>
+                  <span className="max-w-[34ch] text-[15px] leading-[1.6] text-mist">Enquiries reach a specialist directly. We reply with samples, specification and a route to production.</span>
+                </div>
+              ) : (
+                <div className="flex flex-col gap-2">
+                  <span className="font-mono text-[10px] uppercase tracking-[.16em] text-ash">Direct</span>
+                  <a href={`mailto:${EMAIL}`} className="text-[clamp(18px,1.6vw,22px)] font-medium [font-stretch:112%]">{EMAIL}</a>
+                </div>
+              )}
             </Reveal>
-            <Reveal delay={0.15} className="border border-bone/12 bg-ink/55 p-[clamp(24px,3.5vw,48px)] backdrop-blur-md">
-              <EnquiryForm />
+            {/* The real site's form gets its own solid ground. On the glass card it sat on moving city
+                lights and could not be read — the client's word for it was "ass". */}
+            <Reveal delay={0.15} className={form ? "bg-ink px-[clamp(20px,3vw,44px)] py-[clamp(8px,1.4vw,20px)]" : "border border-bone/12 bg-ink/55 p-[clamp(24px,3.5vw,48px)] backdrop-blur-md"}>
+              {form || <EnquiryForm />}
             </Reveal>
           </div>
 

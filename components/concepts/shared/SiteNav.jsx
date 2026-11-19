@@ -60,6 +60,9 @@ const SUB_LABEL = { fontSize: "min(clamp(15px,1.5vw,19px),2.2vh)", fontWeight: "
 
 export default function SiteNav({ current, base = "" }) {
   const MENU = menuFor(base);
+  // The sample request has its own page in the /changes site. On the frozen site there is no such route,
+  // so it stays the in-page anchor it was (which only the cast-film page actually carries).
+  const samplesHref = base ? `${base}/request-samples` : "#samples";
   const [menu, setMenu] = useState(false);
   const [lightGround, setLightGround] = useState(false);
   const logoRef = useRef(null);
@@ -88,7 +91,7 @@ export default function SiteNav({ current, base = "" }) {
         <div style={{ display: "flex", alignItems: "center", gap: "32px", pointerEvents: "auto" }}>
           {/* V1 carries one mono link here. On the real pages it is the sample request the client asked for. */}
           {/* Hidden on phones, where it crowds the logo. The menu's own Request Samples row covers it. */}
-          <a href="#samples" onClick={closeMenu} className="hidden sm:inline" style={{ fontFamily: MONO, fontSize: "11px", letterSpacing: ".14em", textTransform: "uppercase", color: "#fff" }}>Request samples</a>
+          <a href={samplesHref} onClick={closeMenu} className="hidden sm:inline" style={{ fontFamily: MONO, fontSize: "11px", letterSpacing: ".14em", textTransform: "uppercase", color: "#fff" }}>Request samples</a>
           <button onClick={toggleMenu} style={{ background: "none", border: "0", padding: "8px 0", cursor: "pointer", display: "flex", alignItems: "center", gap: "12px", fontFamily: MONO, fontSize: "11px", letterSpacing: ".14em", textTransform: "uppercase", color: "#fff" }}>{menu ? 'Close' : 'Menu'}
             {/* The two rules cross over when the menu is open. The lines sit 6px apart (1px rule + 5px
                 gap), so each travels 3px to meet in the middle before rotating. */}
@@ -127,7 +130,7 @@ export default function SiteNav({ current, base = "" }) {
           ))}
           {/* The client's "clear Request Samples button" (point 4), and the only one on a phone, where
               the bar's version is hidden. */}
-          <a href="#samples" onClick={closeMenu} style={{ ...ROW, borderBottom: HAIR }}>
+          <a href={samplesHref} onClick={closeMenu} style={{ ...ROW, borderBottom: HAIR }}>
             <span style={NUM}>06</span><span style={{ ...LABEL, color: "#c2a274" }}>Request Samples</span>
           </a>
         </div>

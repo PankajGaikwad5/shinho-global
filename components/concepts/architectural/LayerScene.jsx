@@ -83,11 +83,44 @@ function Panel({ st, route, decorUrl, onAnchor }) {
   );
 }
 
-// V16's own camera keyframes, copied value for value (components/concepts/v16/LayerScene.jsx), for the
-// part of its story that explores the panel — its chapters 0 to 5. Its last three keyframes pull back to
-// z 11.5–13.5 for the chip wall, which this page does not have, so they are left out.
-const POS = [[0, 0.4, 6.6], [3.4, 1.7, 5.2], [3.4, 0.5, -0.4], [2.8, 0.8, 0.6], [1.9, 1.5, 2.9], [-1.9, 1.3, 3.8]];
-const LOOK = [[0, 0, 0], [0, 0, 0.4], [0, 0, -1.05], [0, 0, -0.35], [0, 0, 0.35], [0, 0, 1.05]];
+// V16's own camera keyframes, copied value for value (components/concepts/v16/LayerScene.jsx).
+//
+// Four beats, all V16's own keyframes:
+//   0  the stack assembled, head on           (V16 0)
+//   1  it opens, seen from the side high      (V16 1)
+//   2  behind it, edge-on, reading the layers (V16 2)
+//   3  round to the front, high right         (V16 4)  ← THE SECTION ENDS HERE
+//
+// Beat 3 is the frame the client picked to stop on, and it is the last beat, so the camera rests there
+// until the section releases. V16's keyframe 5 (which swung across to the front left) and keyframe 6
+// (the pull-back) are both out: he asked for the section to stop at this frame, not to carry on past it.
+//
+// HOW THE BEATS WERE IDENTIFIED FROM A SCREENSHOT, because guessing got this wrong once. Two checks,
+// both cheap:
+//  1. WHICH WAY THE STACK READS. The layers explode along Z and each label is anchored to its own layer,
+//     so the camera's side decides whether it reads 01-top-coat → 04-liner left to right, or mirrored.
+//     The right vector is cross(forward, up), so +Z is on screen-left only when that vector's Z
+//     component is negative. True for V16 1, 2 and 4; FALSE for V16 5, which mirrors it to 04 → 01.
+//  2. HOW FACE-ON THE PANELS ARE. The panel faces are XY planes, normal (0,0,1), so dot(forward, normal)
+//     gives the viewing angle, and |position| gives how much of the frame they fill:
+//       V16 0  dist 6.6   head on      — layers overlap, nothing reads
+//       V16 1  dist 6.44  38° off      — whole stack in frame with air around it
+//       V16 2  dist 3.46  101° off     — EDGE ON, faces are slivers
+//       V16 4  dist 3.78  43° off      — faces oblique, panels overflow the frame
+const POS = [[0, 0.4, 6.6], [3.4, 1.7, 5.2], [3.4, 0.5, -0.4], [1.9, 1.5, 2.9]];
+const LOOK = [[0, 0, 0], [0, 0, 0.4], [0, 0, -1.05], [0, 0, 0.35]];
+//
+// HOW THE LENGTH ACTUALLY WORKS, because getting this wrong cost two rounds. A transition always takes
+// exactly ONE screen of scroll: `storyAt` eases u from 0 to 1 across a chapter's final screen. `len` does
+// not change that — it only sets how long the camera HOLDS first, which is `len - 1` screens. So for a
+// section of n beats: movement = n-1 screens, dead hold = Σ(len) - n screens.
+//   · Cutting beats removes movement and leaves the holds — the section gets shorter AND emptier, which
+//     is how four beats at V16's lengths ended up feeling like nothing happens when you scroll.
+//   · Cutting `len` removes only dead scroll.
+// This section's copy does not change from beat to beat (unlike V16's page, where each chapter had its
+// own text to read), so a long hold here buys nothing at all — it is scroll where the 3D sits still.
+// Hence len 1.2 on the three travelling beats. The last beat is different: it never moves, so its whole
+// len - 1 is the rest on the closing frame, and it gets 1.8.
 
 function Camera({ st }) {
   const look = useRef(new Vector3(...LOOK[0]));
@@ -106,11 +139,13 @@ function Camera({ st }) {
 // chapter the camera HOLDS (u stays 0) and only eases to the next keyframe during that chapter's final
 // screen. Driving the keyframes linearly from scroll instead — which is what this did before — moves the
 // camera constantly and never lets it settle, which reads as abrupt.
-export const CHAPTERS = [{ len: 1.3 }, { len: 1.4 }, { len: 1.4 }, { len: 1.3 }, { len: 1.8 }, { len: 1.8 }];
-// Phones and small tablets: the first three beats only — assembled, opening, in close and edge-on — at
-// V16's own chapter length so each still holds before it moves. Nine screens of pinned scroll on a phone
-// is a long way to push with a thumb; this is under four.
-export const CHAPTERS_SM = [{ len: 1.3 }, { len: 1.3 }, { len: 1.3 }];
+// The last beat is the one to rest on, so it carries the hold: a final chapter never moves (u is always
+// 0 there), and its share of the scroll is len - 1.
+export const CHAPTERS = [{ len: 1.2 }, { len: 1.2 }, { len: 1.2 }, { len: 1.8 }];
+// Phones and small tablets run the same four beats — the keyframe list has to match the chapter list, or
+// the camera eases towards a frame the chapters never reach. Only the holds are trimmed, because a
+// screen of pinned scroll is a long way to push with a thumb.
+export const CHAPTERS_SM = [{ len: 1.1 }, { len: 1.1 }, { len: 1.1 }, { len: 1.6 }];
 
 export default function LayerScene({ progress, bounds, route, decorUrl, onAnchor }) {
   const st = useRef({ i: 0, t: 0, u: 0, f: 0 });

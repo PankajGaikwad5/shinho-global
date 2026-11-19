@@ -2,6 +2,7 @@ import ConceptShell from "@/components/concepts/shared/ConceptShell";
 import SiteNav from "@/components/concepts/shared/SiteNav";
 import Materials from "@/components/concepts/v1/Materials";
 import EnquirySection from "@/components/concepts/shared/EnquirySection";
+import SiteEnquiryForm from "@/components/concepts/shared/SiteEnquiryForm";
 import { Lines, Reveal } from "@/components/concepts/shared/Reveal";
 
 export const metadata = {
@@ -48,7 +49,7 @@ export default function Catalogue() {
         ctaHref="#contact"
       />
 
-      <EnquirySection logo="light" />
+      <EnquirySection logo="light" form={<SiteEnquiryForm />} />
     </ConceptShell>
   );
 }

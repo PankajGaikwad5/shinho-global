@@ -1,7 +1,9 @@
 import ConceptShell from "@/components/concepts/shared/ConceptShell";
 import SiteNav from "@/components/concepts/shared/SiteNav";
+import Heat from "@/components/concepts/changes/Heat";
 import Manufacturing from "@/components/concepts/v1/Manufacturing";
 import EnquirySection from "@/components/concepts/shared/EnquirySection";
+import SiteEnquiryForm from "@/components/concepts/shared/SiteEnquiryForm";
 
 export const metadata = {
   title: "Manufacturing & Quality — SHINHO GLOBAL",
@@ -15,11 +17,12 @@ export default function ManufacturingQuality() {
   return (
     <ConceptShell switcher={false}>
       <SiteNav base="/changes" current="/changes/manufacturing-quality" />
-      {/* The heat scene now runs on the homepage, where the user wants it kept. It is deliberately NOT
-          repeated here — the client would see the same sequence twice. Point 8 puts it on this page, so if
-          that reading wins, move <Heat /> back here and drop it from app/changes/page.jsx. */}
+      {/* Point 8 — the heat idea lives here, and only here. It is off the homepage, as the client asked
+          ("do not add a new colour-heavy sequence to the homepage"), and it runs straight into real film
+          processing below. */}
+      <Heat />
       <Manufacturing />
-      <EnquirySection logo="light" />
+      <EnquirySection logo="light" form={<SiteEnquiryForm />} />
     </ConceptShell>
   );
 }

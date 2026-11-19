@@ -1,12 +1,10 @@
 import ConceptShell from "@/components/concepts/shared/ConceptShell";
 import SiteNav from "@/components/concepts/shared/SiteNav";
-import Materials from "@/components/concepts/v1/Materials";
 import Layers from "@/components/concepts/architectural/Layers";
-import About from "@/components/concepts/v1/About";
+import Showroom from "@/components/concepts/architectural/Showroom";
 import EnquirySection from "@/components/concepts/shared/EnquirySection";
-import { IMG, VIDEO } from "@/lib/media";
+import SiteEnquiryForm from "@/components/concepts/shared/SiteEnquiryForm";
 import { FAMILIES } from "@/lib/brief";
-import { U, MATS } from "@/lib/materials";
 
 export const metadata = {
   title: "Architectural Interior Films & Top Layers — SHINHO GLOBAL",
@@ -15,65 +13,33 @@ export const metadata = {
 
 const ARCH = FAMILIES[0];
 
-// A short Applications section in the V12 showroom spirit (client brief point 7): a few strong interior
-// examples with space around them, rendered through V1's own Materials panels. Deliberately short — the
-// client asked not to build a second long homepage or a separate showroom journey.
-const ROOMS = [
-  { id: "room-hospitality", n: "01", name: "Hospitality", lede: "Wall panelling, joinery and feature surfaces in hotels, restaurants and lobbies.", img: IMG.ceiling(1600) },
-  { id: "room-workplace", n: "02", name: "Workplace", lede: "Doors, partitions and furniture surfaces across commercial interiors.", img: IMG.aluminium(1600) },
-  { id: "room-residential", n: "03", name: "Residential", lede: "Kitchen fronts, wardrobes and built-in furniture in wood and stone visuals.", img: IMG.oak(1600) },
-];
-
-// The architectural family's own reel, from the finishes in that family.
-const STRIP = ARCH.mats.slice(0, 6).map((m) => ({ img: U(m.img, 900), label: m.name }));
-
+// What the client asked for on this page, and only that:
+//   point 6 — the layer diagram, with the two supply routes, inside this page (not a separate tab).
+//   point 7 — a short Applications section in the V12 showroom spirit.
+//
+// It used to also carry V1's About and V1's Materials with this family's content. Both are homepage
+// sections, so the page read as the homepage again with different words — the client's words were that it
+// was "a duplicate of home page 1:1". They are gone. Do not add homepage sections back here: if this page
+// needs something more, it should be something the client asked for.
 export default function ArchitecturalFilms() {
   return (
     <ConceptShell switcher={false} letterbox={false}>
       <SiteNav base="/changes" current="/changes/materials/architectural-films" />
 
-      {/* The V13 layer story opens the page, as V13 opens with it. The client places it "inside the
-          Architectural Interior Films & Top Layers page" without saying where; here it is the hero. */}
+      {/* Point 6 — the layer story opens the page. The client says "inside the page" without saying where. */}
       <Layers />
 
-      <div>
-        <About
-          id="about-arch"
-          eyebrow="Architectural interior films & top layers"
-          statement={ARCH.lede}
-          rows={ARCH.apps.map((a) => [a, ""])}
-          frameImg={IMG.ceiling(1400)}
-          inset={{ video: VIDEO.marble }}
-          caption="Architectural film application · Interior ceiling"
-          strip={STRIP}
-        />
-      </div>
+      {/* Point 7 — the V12 showroom as a short Applications section: three interior examples. */}
+      <Showroom />
 
-      <Materials
-        id="finishes"
-        lines={["Wood, stone,", "mineral, textile."]}
-        lede="Supplied from established collections or developed to your specification with our manufacturing partner."
-        items={[{
-          id: "arch-collection", n: "01", name: ARCH.name, lede: ARCH.lede, video: ARCH.video,
-          mats: ARCH.mats,
-        }, {
-          id: "arch-custom", n: "02", name: "Custom finishes", lede: "Develop your own colours, textures and specialist luxury finishes for your collection.",
-          img: U(MATS[11].img, 1400),
-        }]}
-        cta="Request samples →"
-        ctaHref="#contact"
+      <EnquirySection
+        logo="light"
+        form={<SiteEnquiryForm
+          interests={ARCH.mats.map((m) => m.name)}
+          interestLabel="Finishes of interest"
+          requestPlaceholder="The interior application, the surfaces involved, and whether you need the finished film or the face film only."
+        />}
       />
-
-      <Materials
-        id="applications"
-        lines={["A few rooms,", "a lot of surface."]}
-        lede="Interior examples showing where these films are applied. Illustrations of possible applications, not Shinho Global customer projects."
-        items={ROOMS}
-        cta="Discuss your project →"
-        ctaHref="#contact"
-      />
-
-      <EnquirySection logo="light" />
     </ConceptShell>
   );
 }

@@ -2,12 +2,12 @@ import ConceptShell from "@/components/concepts/shared/ConceptShell";
 import SiteNav from "@/components/concepts/shared/SiteNav";
 import Hero from "@/components/concepts/changes/Hero";
 import Lab from "@/components/concepts/changes/Lab";
-import Interlude from "@/components/concepts/v1/Interlude";
 import About from "@/components/concepts/v1/About";
 import Materials from "@/components/concepts/v1/Materials";
 import Manufacturing from "@/components/concepts/v1/Manufacturing";
 import Oem from "@/components/concepts/v1/Oem";
 import EnquirySection from "@/components/concepts/shared/EnquirySection";
+import SiteEnquiryForm from "@/components/concepts/shared/SiteEnquiryForm";
 import { ABOUT } from "@/lib/changes";
 import { FAMILIES } from "@/lib/brief";
 
@@ -50,15 +50,12 @@ export default function ChangesHome() {
           href: f.id === "architectural" ? "/changes/materials/architectural-films" : "#contact",
         }))}
       />
-      {/* V1's Interlude, imported as-is — the component itself, not a copy, so it cannot drift from `/`.
-          Same footage, same blend, same words, same scroll. The user asked for V1 exactly here.
-          (Brief point 8 asks for different wording and no furnace on this page; raise it with the client
-          rather than changing this.) */}
-      <Interlude />
+      {/* No Interlude here. Point 8: "do not add a new colour-heavy sequence to the homepage" — the heat
+          idea is on /changes/manufacturing-quality, as components/concepts/changes/Heat.jsx. */}
       <Lab />
       <Manufacturing />
       <Oem />
-      <EnquirySection logo="light" />
+      <EnquirySection logo="light" form={<SiteEnquiryForm interests={FAMILIES.map((f) => f.name)} />} />
     </ConceptShell>
   );
 }

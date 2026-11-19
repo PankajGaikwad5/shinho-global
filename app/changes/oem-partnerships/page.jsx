@@ -4,6 +4,7 @@ import Oem from "@/components/concepts/v1/Oem";
 import About from "@/components/concepts/v1/About";
 import Curve from "@/components/concepts/oem/Curve";
 import EnquirySection from "@/components/concepts/shared/EnquirySection";
+import SiteEnquiryForm from "@/components/concepts/shared/SiteEnquiryForm";
 import { IMG } from "@/lib/media";
 
 export const metadata = {
@@ -40,7 +41,7 @@ export default function OemPartnerships() {
         caption="Partner facility, Republic of Korea"
         strip={null}
       />
-      <EnquirySection logo="light" />
+      <EnquirySection logo="light" form={<SiteEnquiryForm />} />
     </ConceptShell>
   );
 }

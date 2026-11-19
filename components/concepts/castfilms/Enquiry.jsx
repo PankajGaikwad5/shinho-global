@@ -1,8 +1,8 @@
 import Link from "next/link";
-import CastEnquiryForm from "./EnquiryForm";
+import SiteEnquiryForm from "../shared/SiteEnquiryForm";
 import Logo from "../shared/Logo";
 import { Lines, Reveal } from "../shared/Reveal";
-import { CAST_PDF, GROUPS } from "@/lib/cast";
+import { AUTOMOTIVE, CAST_PDF, GROUPS } from "@/lib/cast";
 
 const NEXT = [
   ["01", "Samples", "Tell us the applications you are targeting and we send samples of the relevant films."],
@@ -63,7 +63,13 @@ export default function Enquiry() {
 
           <div id="enquiry" className="scroll-mt-24">
             <Reveal delay={0.15} className="border border-bone/12 bg-ink/55 p-[clamp(24px,3.5vw,48px)] backdrop-blur-md">
-              <CastEnquiryForm />
+              {/* One form across the site now (shared/SiteEnquiryForm). This page's own copy of it had the
+                  same fields and drifted from it the moment either changed. */}
+              <SiteEnquiryForm
+                interests={[...GROUPS.map((g) => g.name), AUTOMOTIVE.name]}
+                interestLabel="Films of interest"
+                requestPlaceholder="The application, and whether you would like samples or a quotation."
+              />
             </Reveal>
           </div>
         </div>

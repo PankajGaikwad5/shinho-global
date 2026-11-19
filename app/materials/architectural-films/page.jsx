@@ -4,6 +4,7 @@ import Materials from "@/components/concepts/v1/Materials";
 import Layers from "@/components/concepts/architectural/Layers";
 import About from "@/components/concepts/v1/About";
 import EnquirySection from "@/components/concepts/shared/EnquirySection";
+import SiteEnquiryForm from "@/components/concepts/shared/SiteEnquiryForm";
 import { IMG, VIDEO } from "@/lib/media";
 import { FAMILIES } from "@/lib/brief";
 import { U, MATS } from "@/lib/materials";
@@ -71,7 +72,7 @@ export default function ArchitecturalFilms() {
         ctaHref="#contact"
       />
 
-      <EnquirySection logo="light" />
+      <EnquirySection logo="light" form={<SiteEnquiryForm />} />
     </ConceptShell>
   );
 }
