@@ -4,6 +4,7 @@ import Heat from "@/components/concepts/changes/Heat";
 import Manufacturing from "@/components/concepts/v1/Manufacturing";
 import EnquirySection from "@/components/concepts/shared/EnquirySection";
 import SiteEnquiryForm from "@/components/concepts/shared/SiteEnquiryForm";
+import { RANGE_LINKS } from "@/lib/products";
 
 export const metadata = {
   title: "Manufacturing & Quality — SHINHO GLOBAL",
@@ -22,7 +23,7 @@ export default function ManufacturingQuality() {
           processing below. */}
       <Heat />
       <Manufacturing />
-      <EnquirySection logo="light" form={<SiteEnquiryForm />} />
+      <EnquirySection links={RANGE_LINKS} logo="light" form={<SiteEnquiryForm />} />
     </ConceptShell>
   );
 }

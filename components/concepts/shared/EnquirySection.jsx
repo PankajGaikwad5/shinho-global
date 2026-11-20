@@ -14,7 +14,12 @@ const NEXT = [
 // `logo`: "light" | "dark" shows the real logo artwork in the footer (V4–V8); omitted keeps the text wordmark (V1–V3).
 // `form`: the form to render. Defaults to the long concept form, so the frozen concept pages (/, /v1, /v2,
 // /v3) are unchanged; the real site passes <SiteEnquiryForm />, which is the client's short form.
-export default function EnquirySection({ video, logo, form }) {
+// `links`: the footer's product links, as [label, href] pairs. The default is V1's own behaviour -
+// the three concept families as on-page anchors - so every frozen page footer is byte-for-byte unchanged.
+// The /changes pages pass RANGE_LINKS from lib/products.js, which is the client's five, each pointing at
+// its own page. Until 20 Nov the footer still offered "Decorative Materials", which exists nowhere on the
+// /changes site, and its "#decorative" anchor resolved to nothing.
+export default function EnquirySection({ video, logo, form, links = FAMILIES.map((f) => [f.name, `#${f.id}`]) }) {
   // The real pages (the ones that pass `form`) sit on a material rather than V1's night-city plate: it is
   // calmer behind a form, and it is a finish rather than a factory. Concepts that pass nothing keep V1's
   // own clip, and V2/V3 pass their own.
@@ -55,7 +60,13 @@ export default function EnquirySection({ video, logo, form }) {
             </Reveal>
             {/* The real site's form gets its own solid ground. On the glass card it sat on moving city
                 lights and could not be read — the client's word for it was "ass". */}
-            <Reveal delay={0.15} className={form ? "bg-ink px-[clamp(20px,3vw,44px)] py-[clamp(8px,1.4vw,20px)]" : "border border-bone/12 bg-ink/55 p-[clamp(24px,3.5vw,48px)] backdrop-blur-md"}>
+            {/* The form panel. It used to be a bare bg-ink block with 8-20px of vertical padding, so its
+                own hard top edge and the first field's hairline landed within a few pixels of each other
+                and the panel read as something that had been cut off. Even padding and a hairline border
+                — the same panel the cast page already used — and the first rule is dropped inside the
+                form, because the panel edge is the boundary. Solid ink, not the glass variant: these
+                fields sit over moving footage and have to stay readable. */}
+            <Reveal delay={0.15} className={form ? "border border-bone/12 bg-ink p-[clamp(24px,3.5vw,48px)]" : "border border-bone/12 bg-ink/55 p-[clamp(24px,3.5vw,48px)] backdrop-blur-md"}>
               {form || <EnquiryForm />}
             </Reveal>
           </div>
@@ -68,7 +79,7 @@ export default function EnquirySection({ video, logo, form }) {
               </div>
             )}
             <div className="flex flex-wrap gap-x-8 gap-y-3 text-sm text-fog">
-              {FAMILIES.map((f) => <a key={f.id} href={`#${f.id}`}>{f.name}</a>)}
+              {links.map(([name, href]) => <a key={name} href={href}>{name}</a>)}
               <a href="#contact">Contact</a>
             </div>
             <span className="basis-full font-mono text-[10px] uppercase tracking-[.08em] text-dusk">© 2026 SHINHO GLOBAL · Manufacturing carried out at partner facilities in the Republic of Korea</span>

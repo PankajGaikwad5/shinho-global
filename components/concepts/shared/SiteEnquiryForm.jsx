@@ -71,7 +71,7 @@ export default function SiteEnquiryForm({ interests = [], interestLabel = "Mater
 
   if (state === "sent") {
     return (
-      <div className="flex min-h-[340px] flex-col justify-center gap-6 border-t border-bone/15 pt-10">
+      <div className="flex min-h-[340px] flex-col justify-center gap-6">
         <span className="font-mono text-[11px] uppercase tracking-[.16em] text-brass">Enquiry received</span>
         <p className="max-w-[22ch] text-[clamp(30px,3.6vw,56px)] leading-[1.02] font-medium [font-stretch:115%] tracking-[-.03em] text-bone">
           Thank you. A specialist will come back to you.
@@ -81,7 +81,9 @@ export default function SiteEnquiryForm({ interests = [], interestLabel = "Mater
   }
 
   return (
-    <form onSubmit={onSubmit} className="flex flex-col">
+    // Every row draws its own top rule. The first one is dropped: inside the panel it doubles the
+    // panel border and the two together read as a cut.
+    <form onSubmit={onSubmit} className="flex flex-col [&>:first-child]:border-t-0">
       <Row k="Name"><input required name="name" autoComplete="name" className={INPUT} /></Row>
       <Row k="Company"><input required name="company" autoComplete="organization" className={INPUT} /></Row>
       <Row k="Email"><input required type="email" name="email" autoComplete="email" className={INPUT} /></Row>

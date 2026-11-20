@@ -29,6 +29,10 @@ const groundIsLight = (x, y, skip) => {
 // `base` prefixes every in-site link, so the /changes copy of the site links within itself.
 const menuFor = (base) => [
   { n: "01", label: "Materials", href: null, sub: [
+    // Point 4's five, in the client's order and wording. Only two have pages: the client has described
+    // only those two products (the deck for cast films, points 6 and 7 for architectural). The other
+    // three are named here because the client's menu names them, and stay unlinked until there is
+    // content for them — see the header of lib/products.js before building one.
     ["Architectural Interior Films & Top Layers", `${base}/materials/architectural-films`],
     ["Furniture Foils", null],
     ["Cast Films for Signage, Printing & Protection", `${base}/cast-films`],

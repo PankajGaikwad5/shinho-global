@@ -44,7 +44,13 @@ export function Groups() {
   const items = GROUPS.map((g) => ({
     // Panel name is the short one; the full product sentence is the lede that opens with the panel.
     id: g.id, n: g.n, name: g.short, lede: g.lede, img: g.img,
-    meta: [`Uses — ${g.uses}`, `Supply — ${g.formats}`],
+    // All four lines the deck gives for this group. `tech` and `grade` were carried in lib/cast.js and
+    // then dropped here, so the per-product technical line and the example figures never reached the
+    // page — the deck has a spec on every product slide. Point 10 asks each product for "available
+    // technical information", and the client's cast email says to keep figures attached to the relevant
+    // product. Each grade line stays next to its own product for exactly that reason, and is never
+    // uppercased: text-transform would turn 50 µm into 50 MM.
+    meta: [`Uses — ${g.uses}`, `Supply — ${g.formats}`, `Technical — ${g.tech}`, g.grade],
   }));
   return (
     <Materials

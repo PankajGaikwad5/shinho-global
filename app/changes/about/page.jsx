@@ -3,6 +3,7 @@ import SiteNav from "@/components/concepts/shared/SiteNav";
 import AboutPage from "@/components/concepts/changes/AboutPage";
 import EnquirySection from "@/components/concepts/shared/EnquirySection";
 import SiteEnquiryForm from "@/components/concepts/shared/SiteEnquiryForm";
+import { RANGE_LINKS } from "@/lib/products";
 import { FAMILIES } from "@/lib/brief";
 
 export const metadata = {
@@ -26,7 +27,7 @@ export default function Page() {
     <ConceptShell switcher={false}>
       <SiteNav base="/changes" current="/changes/about" />
       <AboutPage />
-      <EnquirySection logo="light" form={<SiteEnquiryForm interests={FAMILIES.map((f) => f.name)} />} />
+      <EnquirySection links={RANGE_LINKS} logo="light" form={<SiteEnquiryForm interests={FAMILIES.map((f) => f.name)} />} />
     </ConceptShell>
   );
 }

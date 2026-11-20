@@ -8,7 +8,7 @@ import Manufacturing from "@/components/concepts/v1/Manufacturing";
 import Oem from "@/components/concepts/v1/Oem";
 import EnquirySection from "@/components/concepts/shared/EnquirySection";
 import SiteEnquiryForm from "@/components/concepts/shared/SiteEnquiryForm";
-import { FAMILIES } from "@/lib/brief";
+import { RANGE, RANGE_LINKS } from "@/lib/products";
 
 export const metadata = {
   title: "SHINHO GLOBAL",
@@ -35,18 +35,20 @@ export default function ChangesHome() {
       <About />
       {/* V1's own sections and order. Point 13: no placeholder "#" links — each family panel points at its
           page, or at the enquiry where that page does not exist yet. */}
+      {/* Point 4 defines the range as five, and point 13 says no placeholder links. The panels are the
+          same five the menu lists, each linking to its own page — RANGE in lib/products.js. They used to
+          be the three concept-era families, two of which pointed at #contact. */}
       <Materials
-        items={FAMILIES.map((f) => ({
-          ...f,
-          href: f.id === "architectural" ? "/changes/materials/architectural-films" : "#contact",
-        }))}
+        lines={["Five families", "of surface."]}
+        items={RANGE}
+        cta="See the range →"
       />
       {/* No Interlude here. Point 8: "do not add a new colour-heavy sequence to the homepage" — the heat
           idea is on /changes/manufacturing-quality, as components/concepts/changes/Heat.jsx. */}
       <Lab />
       <Manufacturing />
       <Oem />
-      <EnquirySection logo="light" form={<SiteEnquiryForm interests={FAMILIES.map((f) => f.name)} />} />
+      <EnquirySection links={RANGE_LINKS} logo="light" form={<SiteEnquiryForm interests={RANGE.map((f) => f.name)} />} />
     </ConceptShell>
   );
 }

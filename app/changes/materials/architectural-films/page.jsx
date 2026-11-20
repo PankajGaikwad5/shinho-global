@@ -2,9 +2,11 @@ import ConceptShell from "@/components/concepts/shared/ConceptShell";
 import SiteNav from "@/components/concepts/shared/SiteNav";
 import Layers from "@/components/concepts/architectural/Layers";
 import Showroom from "@/components/concepts/architectural/Showroom";
+import TechnicalNote from "@/components/concepts/products/TechnicalNote";
 import EnquirySection from "@/components/concepts/shared/EnquirySection";
 import SiteEnquiryForm from "@/components/concepts/shared/SiteEnquiryForm";
 import { FAMILIES } from "@/lib/brief";
+import { TECHNICAL, RANGE_LINKS } from "@/lib/products";
 
 export const metadata = {
   title: "Architectural Interior Films & Top Layers — SHINHO GLOBAL",
@@ -32,7 +34,12 @@ export default function ArchitecturalFilms() {
       {/* Point 7 — the V12 showroom as a short Applications section: three interior examples. */}
       <Showroom />
 
-      <EnquirySection
+      {/* Point 10 asks every product page for "available technical information". This page had none.
+          A statement, not a table: we have no figures for this product and the client's rule is that a
+          figure belongs to the grade it came from. */}
+      <TechnicalNote t={TECHNICAL} />
+
+      <EnquirySection links={RANGE_LINKS}
         logo="light"
         form={<SiteEnquiryForm
           interests={ARCH.mats.map((m) => m.name)}

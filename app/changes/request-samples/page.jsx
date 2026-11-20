@@ -69,7 +69,7 @@ export default function RequestSamples() {
               </Reveal>
 
               {/* Solid ground, not a glass card over the video — the fields have to be readable. */}
-              <Reveal delay={0.15} className="bg-ink px-[clamp(20px,3vw,44px)] py-[clamp(8px,1.4vw,20px)]">
+              <Reveal delay={0.15} className="border border-bone/12 bg-ink p-[clamp(24px,3.5vw,48px)]">
                 <SiteEnquiryForm
                   interests={FAMILIES.map((f) => f.name)}
                   requestPlaceholder="The application, the finishes you are interested in, and the samples you would like to see."

@@ -3,6 +3,7 @@ import SiteNav from "@/components/concepts/shared/SiteNav";
 import Materials from "@/components/concepts/v1/Materials";
 import EnquirySection from "@/components/concepts/shared/EnquirySection";
 import SiteEnquiryForm from "@/components/concepts/shared/SiteEnquiryForm";
+import { RANGE_LINKS } from "@/lib/products";
 import { Lines, Reveal } from "@/components/concepts/shared/Reveal";
 import { CAST_PDF } from "@/lib/cast";
 
@@ -55,7 +56,7 @@ export default function Catalogue() {
         ctaHref="#contact"
       />
 
-      <EnquirySection logo="light" form={<SiteEnquiryForm />} />
+      <EnquirySection links={RANGE_LINKS} logo="light" form={<SiteEnquiryForm />} />
     </ConceptShell>
   );
 }

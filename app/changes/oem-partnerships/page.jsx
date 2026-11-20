@@ -5,6 +5,7 @@ import About from "@/components/concepts/v1/About";
 import Curve from "@/components/concepts/oem/Curve";
 import EnquirySection from "@/components/concepts/shared/EnquirySection";
 import SiteEnquiryForm from "@/components/concepts/shared/SiteEnquiryForm";
+import { RANGE_LINKS } from "@/lib/products";
 import { IMG } from "@/lib/media";
 
 export const metadata = {
@@ -41,7 +42,7 @@ export default function OemPartnerships() {
         caption="Partner facility, Republic of Korea"
         strip={null}
       />
-      <EnquirySection logo="light" form={<SiteEnquiryForm />} />
+      <EnquirySection links={RANGE_LINKS} logo="light" form={<SiteEnquiryForm />} />
     </ConceptShell>
   );
 }
